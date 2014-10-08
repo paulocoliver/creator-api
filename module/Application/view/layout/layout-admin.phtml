@@ -1,0 +1,367 @@
+<?php echo $this->doctype(); ?>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+                              
+<?php echo $this->headTitle() ?>
+<?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
+	
+<!-- stylesheets -->
+<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+                ->appendStylesheet($this->basePath() . '/css/compiled/theme.css')
+                ->appendStylesheet($this->basePath() . '/css/vendor/animate.css')
+                ->appendStylesheet($this->basePath() . '/css/vendor/brankic.css')
+                ->appendStylesheet($this->basePath() . '/css/vendor/ionicons.min.css')
+                ->appendStylesheet($this->basePath() . '/css/vendor/font-awesome.min.css') 
+                ->appendStylesheet($this->basePath() . '/css/vendor/bootstrap-switch.min.css') 
+                ->appendStylesheet($this->basePath() . '/css/vendor/messenger/messenger.css') 
+                ->appendStylesheet($this->basePath() . '/css/vendor/messenger/messenger-theme-flat.css') 
+                ->appendStylesheet($this->basePath() . '/css/vendor/jquery.dataTables.css') 
+?>
+<!-- javascript -->
+<?php echo $this->headScript()
+                ->appendFile($this->basePath() . '/js/vendor/jquery.min.js')
+                ->appendFile($this->basePath() . '/js/bootstrap/bootstrap.min.js') 
+                ->appendFile($this->basePath() . '/js/vendor/jquery.cookie.js') 
+                ->appendFile($this->basePath() . '/js/theme.js') 
+                ->appendFile($this->basePath() . '/js/vendor/jquery.pjax.js')
+                ->appendFile($this->basePath() . '/js/vendor/bootstrap-switch.min.js')
+                ->appendFile($this->basePath() . '/js/vendor/mustache.js')
+                ->appendFile($this->basePath() . '/js/vendor/jquery.validate.min.js')
+                ->appendFile($this->basePath() . '/js/vendor/messenger/messenger.min.js')
+                ->appendFile($this->basePath() . '/js/vendor/messenger/messenger-theme-flat.js')
+                ->appendFile($this->basePath() . '/js/vendor/jquery.dataTables.min.js')
+                
+                /*->appendFile($this->basePath() . 'js/vendor/underscore.js')
+                ->appendFile($this->basePath() . 'js/vendor/backbone.js')
+                ->appendFile($this->basePath() . 'js/vendor/mustache.js')
+                ->appendFile($this->basePath() . 'js/routes.js')*/
+                ->appendFile('http://html5shim.googlecode.com/svn/trunk/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+?>     
+<style type="text/css">
+#loading {
+	background-color: rgba(165, 165, 165, 0.51); width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 2000; display: none;
+}
+#loading i {
+	position: fixed; left: 50%; top: 50%; color: #FFF; font-size: 22px; margin-top: -40px; margin-left: -10px;
+}
+</style>
+</head>
+<body>
+    <div id="wrapper">
+		<div id="sidebar-default" class="main-sidebar">
+			<div class="current-user">
+				<a href="index.html" class="name">
+					<?php echo $this->gravatar($this->user->email, array(), array('class' => 'avatar')) ?>
+					<span>
+						<?php echo $this->user->nome ?>
+						<i class="fa fa-chevron-down"></i>
+					</span>
+				</a>
+				<ul class="menu">
+					<li>
+						<a href="account-profile.html">Account settings</a>
+					</li>
+					<li>
+						<a href="account-billing.html">Billing</a>
+					</li>
+					<li>
+						<a href="account-notifications.html">Notifications</a>
+					</li>
+					<li>
+						<a href="account-support.html">Help / Support</a>
+					</li>
+					<li>
+						<a href="signup.html">Sign out</a>
+					</li>
+				</ul>
+			</div>
+			<div class="menu-section">
+				<h3>Menu</h3>
+				<ul>
+					<li>
+						<a href="<?php echo $this->url('apis') ?>" data-pjax>
+							<i class="fa fa-globe fa-fw"></i> 
+							<span>Minhas APIs</span>
+						</a>
+					</li>
+					<li>
+						<a href="<?php //echo $this->url('apis') ?>" data-pjax>
+							<i class="fa fa-search fa-fw"></i> 
+							<span>APIS Públicas</span>
+						</a>
+					</li>
+					<li>
+						<a href="<?php //echo $this->url('apis') ?>" data-pjax>
+							<i class="fa fa-line-chart fa-fw"></i> 
+							<span>Relatórios</span>
+						</a>
+					</li>
+					<li>
+						<a href="<?php //echo $this->url('apis') ?>" data-pjax>
+							<i class="fa fa-database fa-fw"></i> 
+							<span>Conexões</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="bottom-menu hidden-sm">
+				<ul>
+					<li><a href="#"><i class="ion-help"></i></a></li>
+					<li>
+						<a href="#">
+							<i class="ion-archive"></i>
+							<span class="flag"></span>
+						</a>
+						<ul class="menu">
+							<li><a href="#">5 unread messages</a></li>
+							<li><a href="#">12 tasks completed</a></li>
+							<!-- <li><a href="#">3 features added</a></li> -->
+						</ul>
+					</li>
+					<li><a href="signup.html"><i class="ion-log-out"></i></a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="content-box">
+			<?php echo $this->content ?>
+		</div>
+	</div>
+
+	<?php 
+	/*
+	<div class="skin-switcher">
+		<div class="toggler">
+			<span class="brankic-brush"></span>
+		</div>
+		<ul class="menu">
+			<li>
+				<a class="active" data-skin="sidebar-default" href="#">
+					<span class="color default"></span> Default
+					<i class="fa fa-check"></i>
+				</a>
+			</li>
+			<li>
+				<a data-skin="sidebar-clear" href="#">
+					<span class="color clear"></span> Clear
+					<i class="fa fa-check"></i>
+				</a>
+			</li>
+			<li>
+				<a data-skin="sidebar-black" href="#">
+					<span class="color black"></span> Black
+					<i class="fa fa-check"></i>
+				</a>
+			</li>
+			<li>
+				<a data-skin="sidebar-dark" href="#">
+					<span class="color dark"></span> Dark
+					<i class="fa fa-check"></i>
+				</a>
+			</li>
+			<li>
+				<a data-skin="sidebar-flat" href="#">
+					<span class="color flat"></span> Flat
+					<i class="fa fa-check"></i>
+				</a>
+			</li>
+			<li>
+				<a data-skin="sidebar-flat-dark" href="#">
+					<span class="color flat-dark"></span> Flat dark
+					<i class="fa fa-check"></i>
+				</a>
+			</li>
+		</ul>
+	</div>
+	*/
+	?>
+	<div id="loading"><i class="fa fa-circle-o-notch fa-spin"></i></div>
+	
+	<div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog">
+	  	<div class="modal-dialog">
+		    <div class="modal-content">
+		      	<div class="modal-body">						
+		        	<h4 class="modal-title">
+		        		Tem certeza de que deseja removar esse item?
+		        	</h4>
+		      	</div>
+		      	<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			        <button type="button" class="btn btn-danger btn-confirm-modal">Yes, delete it</button>
+		      	</div>
+		    </div>
+	  	</div>
+	</div>
+	
+	<script type="text/javascript">
+	$.pjax.defaults.timeout = 7000;
+	$.pjax.defaults.container = '#content-box';
+	
+	$(document).pjax('[data-pjax] a, a[data-pjax]', '#content-box');
+	/*$(document).on('pjax:send', function() {
+		$('#loading').show();
+	});
+	$(document).on('pjax:complete', function(xhr, textStatus, options) {
+		$('#loading').hide();
+	});*/
+
+	$(document).ajaxSend(function() {
+		$('#loading').show();
+	});
+	$(document).ajaxComplete(function( event,request, settings ) {
+		$('#loading').hide();
+	});
+	
+
+	Messenger.options = {
+	    extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+	    theme: 'flat'
+	    //extraClasses: 'messenger-fixed messenger-on-top messenger-on-center',
+	    //theme: 'future',
+	    
+	};
+
+	var func_confirm_modal = function() {};
+	$('.btn-confirm-modal').click(function (e) {
+		$('#confirm-modal').modal('hide');
+		func_confirm_modal();
+	});
+	function showConfirmModal(params) {
+		var md = $('#confirm-modal');
+		var title = md.find('.modal-title');
+		var body  = md.find('.modal-body');
+		
+		if (params.title)
+			md.find('.modal-title').html(params.title);
+
+		if (body.html() == '')
+			body.addClass();
+		
+		md.modal('show');
+	}
+
+	function postAjax(form, callSuccess, callFail) {
+		if (!callSuccess)
+			callSuccess = function(){};
+
+		if (!callFail)
+			callFail = function(){};
+		
+		$.post(form.attr('action'), form.serialize(), function(result) {
+			if (result.msg)
+				Messenger().post({
+					  message: result.msg,
+					  type: result.success ? 'success' : 'error',
+					  showCloseButton: true
+				});
+			
+			if (result.success)
+				callSuccess(result);
+			else
+				callFail(result);
+			
+		}, "json");
+	}
+
+
+	function sendAjax(params) {
+
+		if (!params.done) params.done = function(){};
+		if (!params.nosuccess) params.nosuccess = function(){};
+		if (!params.always) params.always = function(){};
+
+		if (!params.fail)
+			params.fail = function(){
+				Messenger().post({message: 'Oops...Ocorreu um problema na resposta do servidor', type: 'error', showCloseButton: true});
+			};
+
+		if (params.form) {
+			if (!params.url) params.url = params.form.attr('action');
+			if (!params.data) params.data = params.form.serialize();
+		}	
+		
+		if (!params.data) params.data = {};
+		if (!params.type) params.type = 'POST';
+
+		if (!params.url) {
+			Messenger().post({message: 'Oops...Ocorreu um problema na requisição ao servidor', type: 'error', showCloseButton: true});
+			return;
+		}
+			
+		
+		$.ajax({
+			url: params.url,
+			type: params.type,
+			data: params.data,
+			dataType: 'json'
+		}).done(function(result) {
+			if (result.msg)
+				Messenger().post({
+					message: result.msg,
+					type: result.success ? 'success' : 'error',
+					showCloseButton: true
+				});
+			
+			if (result.success)
+				params.done(result);
+			else
+				params.nosuccess(result);
+					
+		})
+		.fail(params.fail)
+		.always(params.always);
+	}
+
+	$.validator.addMethod("checkURL", function(value) {
+		var patt = new RegExp(/^([a-z]|\d|-){6,30}$/);
+		return patt.test(value);
+	}, 'Deve ter de 6 - 30 caracteres. Com letras, números ou -.');
+
+	$.validator.setDefaults({
+		errorElement: "label",
+	    errorClass: "error",
+		highlight: function(element) {
+		    //$(element).closest('.control-group').children('div[class="help-block"]').hide();
+
+			//$(element).closest('.form-group').next('div[class="help-block"]').hide();
+			$(element).closest('.form-group').addClass('has-error');
+	    },
+	    success: function(element) {
+		      //$(element).closest('.control-group').children('div[class="help-block"]').show();
+		      //element.addClass('valid').closest('.control-group').removeClass('error');
+		    var group = $(element).closest('.form-group'); 
+			group.removeClass('has-error');
+			group.find('label.error').remove(); 
+		},
+		errorPlacement: function(error, element) {
+			//$(element).after(error);
+			$(element).closest('.form-group').append(error);
+
+		}
+	});
+	
+<?php 
+$flashmessenger = array(
+	'info'    => $this->flashmessenger()->getInfoMessages(),
+	'error'   => $this->flashmessenger()->getErrorMessages(),
+	'success' => $this->flashmessenger()->getSuccessMessages(),
+);
+
+foreach ($flashmessenger as $type => $messages):
+    foreach ($messages as $message):
+?>
+    Messenger().post({
+		  message: '<?php echo $this->escapejs($this->translate($message)) ?>',
+		  type: '<?php echo $type ?>',
+		  showCloseButton: true
+	});
+<?php
+    endforeach;
+endforeach;
+?>
+	</script>
+	
+	
+    <?php echo $this->inlineScript() ?>
+</body>
+</html>

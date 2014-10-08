@@ -12,6 +12,22 @@
  */
 
 return array(
+		
+	'doctrine' => array(
+		'connection' => array(
+			'driver'   => 'pdo_mysql',
+			'host'     => 'localhost',
+			'port'     => '3306',
+			'user'     => 'root',
+			'password' => 'root',
+			'dbname'   => 'tcc',
+			'charset' => 'UTF8',
+			'driverOptions' => array(
+				\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
+			),
+		)
+	),
+		
 	'db' => array(
 	    
 	    'driver'   => 'Pdo',

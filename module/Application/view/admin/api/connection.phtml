@@ -1,0 +1,79 @@
+<section class="form-wizard">
+	<?php
+	if ($userApi->permissao == 'OWNER'):
+	?>
+	<div class="step active animated fadeInRightStep">
+		<h3 class="text-center">Escolher uma conexão existente</h3>
+		<div class="row">
+			<div class="col-md-7">
+			<?php
+			$formApiConexao->setAttribute('action', $this->url(null, array(), array(), true));
+			echo $this->form($formApiConexao);
+			?>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<div class="step active animated fadeInRightStep">
+		<h3 class="text-center">Criar uma nova conexão</h3>
+		<div class="row">
+			<div class="col-md-7">
+				<?php
+				$formAddConexao->setAttribute('action', $this->url('connection-save'));
+				echo $this->form($formAddConexao);
+			  	?>
+			</div>
+		</div>
+	</div>
+	<?php 
+	else :
+	?>
+	<div class="step active animated fadeInRightStep">
+		<div class="success">
+			<i class="fa fa-exclamation-triangle" style="font-size: 55px; color: #FF5607;"></i>
+			<h3>Somente o proprietário pode alterar a conexão</h3>
+		</div>
+	</div>
+	<?php 
+	endif;
+	?>
+	<div class="step active animated fadeInRightStep">
+		<div class="form-group form-actions">
+			<a class="button" data-pjax href="<?php echo $this->url('api-share', array('id' => $userApi->api->id)) ?>"><span><i class="fa fa-angle-double-left"></i> Voltar</span></a>
+			<a class="button" data-pjax href="<?php echo $this->url('api-resources', array('id' => $userApi->api->id)) ?>"><span>Próximo<i class="fa fa-angle-double-right"></i></span></a>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+$(function (){
+	$('#form_api_conexao').validate({
+    	submitHandler: function(form) {
+        	sendAjax({
+    			form: $(form),
+    			done: function(result) {
+    				if (result.data.next) {
+    					setTimeout(function(){$('#loading').show();}, 50);
+    					setTimeout(function(){location.href = result.data.next;}, 2000);
+        				
+    				}
+            	}
+        	});
+    	},
+    });
+	$('#form_conexao').validate({
+    	submitHandler: function(form) {
+    		sendAjax({
+    			form: $(form),
+    			done: function(result) {
+    				if (result.data.conexao.id) {
+                		var sel = $('#form_api_conexao select');
+                		sel.append(new Option(result.data.conexao.nome, result.data.conexao.id, true, true));
+                		sel.focus();
+                		sel.validate();
+                	}
+            	}
+        	});
+    	},
+    });
+});
+</script>

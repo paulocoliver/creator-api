@@ -1,0 +1,93 @@
+<?php
+$disponivel = $this->formElement($form->get('disponivel'));
+$_get 	 = $this->formElement($form->get('_get'));
+$_post 	 = $this->formElement($form->get('_post'));
+$_put 	 = $this->formElement($form->get('_put'));
+$_delete = $this->formElement($form->get('_delete'));
+$form->remove('disponivel')->remove('_get')->remove('_post')->remove('_put')->remove('_delete');
+
+
+$form->setAttribute('action', $this->url(null, array(), array(), true));
+echo $this->form()->openTag($form);
+echo $this->formCollection($form, null); 
+?>
+<div class="form-group ">
+	<label class="center-block">Disponível</label>
+	<?php echo $disponivel ?>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		<div class="form-group ">
+			<label class="center-block">GET (Leitura)</label>
+			<?php echo $_get ?>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="form-group ">
+			<label class="center-block">POST (Adicionar)</label>
+			<?php echo $_post ?>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="form-group ">
+			<label class="center-block">PUT (Alterar)</label>
+			<?php echo $_put ?>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="form-group ">
+			<label class="center-block">DELETE (Apagar)</label>
+			<?php echo $_delete ?>
+		</div>
+	</div>
+</div>
+
+<?php 
+echo $this->form()->closeTag();
+?>
+<script type="text/javascript">
+$('#form_recurso').validate({
+	rules: {
+		resource: {checkURL: true}
+	},
+	submitHandler: function(form) {
+		sendAjax({
+			form: $(form),
+			done: function(result) {
+				if (result.data.resource) {
+					console.log(result.data.resource);
+					var tr = $("#row_"+result.data.resource.id);
+					tr.find('td.col_tabela span').html(result.data.resource.db_table);
+					tr.find('td.col_recurso').html(result.data.resource.resource);
+					var disponivel = tr.find('td.col_disponivel span.label');
+					disponivel.html(result.data.resource.disponivel);
+					if (result.data.resource.disponivel == 'SIM')
+						disponivel.removeClass('label-warning').addClass('label-success');
+					else
+						disponivel.removeClass('label-success').addClass('label-warning');
+				}
+				$('#modalEditResources').modal('hide');
+				
+        	}
+    	});
+	},
+});
+$('#disponivel_switch').bootstrapSwitch({
+	"size": "normal",
+	"animate": true,
+	"indeterminate": true,
+	"onColor": "success",
+	"offColor": "danger",
+	"onText": "Sim",
+	"offText": "Não"
+});
+$('#_get_switch, #_post_switch, #_put_switch, #_delete_switch').bootstrapSwitch({
+	"size": "small",
+	"animate": true,
+	"indeterminate": true,
+	"onColor": "success",
+	"offColor": "danger",
+	"onText": "Ativo",
+	"offText": "Inativo"
+});
+</script>

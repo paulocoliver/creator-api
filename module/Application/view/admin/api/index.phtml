@@ -1,0 +1,108 @@
+
+<div id="content">
+    <div class="menubar">
+    	<div class="sidebar-toggler visible-xs">
+    		<i class="ion-navicon"></i>
+    	</div>
+    	<div class="page-title">
+			APIs
+    	</div>
+    	<a  href="<?php echo $this->url('api') ?>" data-pjax class="new-user btn btn-success pull-right"><span>Create a New API</span></a>
+    </div>
+    <div class="content-wrapper clearfix">
+    	 
+        <div id="projects">
+            <div class="row project-list">
+            	<div class="project new">
+            		<a href="<?php echo $this->url('api') ?>" data-pjax>
+            			<i class="ion-ios7-plus-outline"></i>
+            			<span class="info">
+            				Create a New API
+            			</span>
+            		</a>
+            	</div>
+            	
+            	<?php
+                foreach ($this->results as $result):
+            	?>
+            	<div class="project">
+            		<div class="info">
+            			<div class="name"><?php echo $result['titulo'] ?></div>
+            			<div class="category"><?php echo $result['descricao'] ?></div>
+            			<div class="last-update">Last updated 3 hours ago</div>
+            		</div>
+            		<div class="members">
+            			<?php 
+            			foreach ($this->api_users($result['id']) as $user):
+                            echo $this->gravatar(
+                                $user['email'],
+                                array('img_size' => 50), 
+                                array(
+                                    'class' => strtolower($user['permissao']),
+                                    'data-toggle' => 'popover',
+                                    'data-content' => '<b>'.$user['nome'].'</b><br>@'.$user['username'],
+                                    'title' => '',
+                                )
+                            );    
+            			endforeach;
+            			?>
+            			<a href="#" class="add-more"><i class="fa fa-plus"></i></a>
+            			<ul class="menu">
+                            <li><a href="#"><i class="fa fa-code fa-fw"></i>Doc</a></li>
+            				<?php 
+            				if ($result['permissao'] == 'OWNER' || $result['permissao'] == 'EDIT'):
+            				    $param_id = array('id' => $result['id']);
+            				?>
+            				<li>
+            				    <a href="<?php echo $this->url('api', $param_id) ?>" data-pjax><i class="fa fa-pencil fa-fw"></i>Editar</a>
+            				</li>
+            				<li><a href="<?php echo $this->url('api-share', $param_id) ?>" data-pjax><i class="fa fa-share-alt fa-fw"></i>Compartilhamento</a></li>
+            				<li><a href="<?php echo $this->url('api-resources', $param_id) ?>" data-pjax><i class="fa fa-list fa-fw"></i>Recursos</a></li>
+            				<?php 
+            				endif;
+            				?>
+            				<?php 
+            				if ($result['permissao'] == 'OWNER'):
+            				?>
+            				<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete Api</a></li>
+            				<?php 
+            				endif;
+            				?>
+            			</ul>
+            		</div>
+            	</div>
+            	<?php 
+            	endforeach;
+            	?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+
+	$('.members img').popover({html: true, placement: 'top'});
+	var $projects = $(".project");
+
+	$projects.each(function (index, el) {
+		var $btn = $(el).find(".add-more");
+		var $menu = $btn.siblings(".menu");
+		var timeout;
+
+		$btn.click(function (e) { e.preventDefault(); });
+
+		$(el).on("mouseenter", ".add-more, .menu", function () {
+			clearTimeout(timeout);
+			timeout = null;
+			$menu.addClass("active");
+		});
+
+		$(el).on("mouseleave", ".add-more, .menu", function () {
+			timeout = setTimeout(function () {
+				$menu.removeClass("active");
+			}, 400);
+		});
+	});
+});
+</script>

@@ -3,4 +3,8 @@
 .buildpath
 .DS_Store
 /vendor
+/docs
+/public/css/.sass-cache
+/public/images
 composer.lock
+composer.phar

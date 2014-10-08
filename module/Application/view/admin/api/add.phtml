@@ -1,0 +1,68 @@
+<section class="form-wizard">
+	<div class="step active animated fadeInRightStep">
+		<?php
+		$status = $this->formElement($form->get('status'));
+		$acesso = $this->formElement($form->get('acesso'));
+		$form->remove('status');
+		$form->remove('acesso');
+		
+		$form->setAttribute('action', $this->url(null, array(), array(), true));
+		echo $this->form()->openTag($form);
+		echo $this->formCollection($form); 
+		?>
+		<div class="form-group ">
+			<label class="center-block">Status</label>
+			<?php echo $status ?>
+		</div>
+		<div class="form-group ">
+			<label class="center-block">Acesso</label>
+			<?php echo $acesso ?>
+		</div>
+		<div class="form-group form-actions">
+			<button type="submit"  class="button"><span>Salvar e continuar <i class="fa fa-angle-double-right"></i></span></button>
+		</div>
+		<?php 
+		echo $this->form()->closeTag();
+		?>
+	</div>
+</section>
+
+<script type="text/javascript">
+$(function () {
+	$('#status_switch').bootstrapSwitch({
+		"size": "large",
+		"animate": true,
+		"indeterminate": true,
+		"onColor": "success",
+		"offColor": "danger",
+		"onText": "On",
+		"offText": "Off"
+	});
+	$('#acesso_switch').bootstrapSwitch({
+		"size": "large",
+		"animate": true,
+		"indeterminate": true,
+		"onColor": "success",
+		"offColor": "warning",
+		"onText": "Public",
+		"offText": "Private"
+	});
+
+    $('#form_api').validate({
+    	rules: {
+    		url: {
+    			checkURL: true
+    		}
+    	},
+    	submitHandler: function(form) {
+    		sendAjax({
+    			form: $(form),
+    			done: function(result) {
+        			if (result.data.next)
+        				$.pjax({url: result.data.next});
+            	}
+        	});
+    	},
+    });
+});
+</script>

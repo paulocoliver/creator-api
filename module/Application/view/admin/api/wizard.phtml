@@ -1,0 +1,36 @@
+<?php 
+$act1 = $this->item == 1 ? 'active' : '';
+$act2 = $this->item == 2 ? 'active' : '';
+$act3 = $this->item == 3 ? 'active' : '';
+$act4 = $this->item == 4 ? 'active' : '';
+?>
+<div id="wizard">
+    <div id="content">
+        <div class="content-wrapper">
+        	<div class="header">
+        		<div class="sidebar-toggler visible-xs">
+        			<i class="ion-navicon"></i>
+        		</div>
+        		<div class="steps clearfix">
+        			<div class="step <?php echo $act1 ?>">
+        				Criar API
+        				<span><i class="fa fa-pencil fa-fw"></i></span>
+        			</div>
+        			<div class="step <?php echo $act2 ?>">
+        				Compartilhamento
+        				<span><i class="fa fa-share-alt fa-fw"></i></span>
+        			</div>
+        			<div class="step <?php echo $act3 ?>">
+        				Conexão com Banco de dados
+        				<span><i class="fa fa-database fa-fw"></i></span>
+        			</div>
+        			<div class="step <?php echo $act4 ?>">
+        				Recursos
+        				<span><i class="fa fa-list fa-fw"></i></span>
+        			</div>
+        		</div>
+        	</div>
+        	<?php echo $this->content ?>
+        </div>
+    </div>
+</div>

@@ -4,6 +4,7 @@ use Exception;
 
 class ApiTable extends AbstractTable { 
     protected $table = "api";
+    //protected $table = "api";
     
     /*public function addUser($fields) {
     	try {
@@ -13,5 +14,10 @@ class ApiTable extends AbstractTable {
     		return false;
     	}
     }*/
+    
+    public function checkDados($dados) {
+        $dados['status'] = $dados['status'] == 'ATIVO' ? 'ATIVO' : 'INATIVO';
+    	return $dados;
+    }
     
 }

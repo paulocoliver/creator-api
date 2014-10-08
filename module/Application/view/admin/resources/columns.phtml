@@ -1,0 +1,57 @@
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Campo</th>
+			<th>Tipo</th>
+			<th>Disponível</th>
+			<?php 
+			if ($this->resource->getTipo() == 'TABLE'):
+			?>
+			<th>Validadores</th>
+			<?php 
+			endif;
+			?>
+        </tr>
+	</thead>
+	<tbody>
+	<?php
+	foreach ($this->resource->getColunaCollection() as $coluna):
+	?>
+	<tr>
+		<td><?php echo $coluna->getNome() ?></td>
+		<td><?php echo $coluna->getTipo() ?></td>
+		<td>
+			<input class="coluna_disponivel_checkbox" type="checkbox" value="SIM" <?php echo $coluna->getDisponivel() == 'SIM' ? 'checked="checked"' : '' ?> >
+		</td>
+		<?php 
+		if ($this->resource->getTipo() == 'TABLE'):
+		?>
+		<td>
+			<button type="button" class="btn btn-default btn-sm btn-edit-validator" data-id="<?php echo $coluna->getId() ?>"><i class="fa fa-pencil fa-fw"></i> Alterar</button>
+		</td>
+		<?php 
+		endif;
+		?>
+	</tr>
+	<?php 
+	endforeach;
+	?>
+	</tbody>
+</table>
+<script type="text/javascript">
+$('.coluna_disponivel_checkbox').bootstrapSwitch({
+		"size": "small",
+		"animate": true,
+		"indeterminate": true,
+		"onColor": "success",
+		"offColor": "danger",
+		"onText": "Sim",
+		"offText": "Não"
+});
+$(".btn-edit-validator").on('click', function(e) {
+	var elm = $(this);
+	var id = elm.data('id');
+	alert(id);
+});
+</script>

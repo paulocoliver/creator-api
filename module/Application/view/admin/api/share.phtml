@@ -1,0 +1,166 @@
+<section class="form-wizard">
+	<form id="form-api-share" method="post" action="<?php echo $this->url(null, array(), array(), true) ?>" role="form">
+		<div class="step active animated fadeInRightStep">
+			<div class="form-group">
+				<div class="row">
+					<div class="col-md-7">
+						<label>Adicionar usuário</label>
+						<div class="input-group">
+                            <input type="text" class="form-control" placeholder="Email or username" name="user" required="required">
+                            <span class="input-group-addon" style="border-left: 0 none;"><label class="checkbox-inline">Edit<input type="checkbox" name="edit" value="SIM"></label></span>
+                            <span class="input-group-btn">
+                                <button class="btn btn-info" type="submit"><i class="fa fa-plus"></i> Add</button>
+                            </span>
+                        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</section>
+
+
+<div class="container">
+    <div id="users">
+        <div class="content-wrapper">
+            <div class="row users-list">
+            	<div class="col-md-12">
+            	   <div class="row headers">
+						<div class="col-sm-2  select-users">
+						</div>
+						<div class="col-sm-3  hidden-xs">
+							<label>Name</label>
+						</div>
+						<div class="col-sm-3  hidden-xs">
+							<label>Email</label>
+						</div>
+						<div class="col-sm-2  hidden-xs">
+							<label>Username</label>
+						</div>
+						<div class="col-sm-2  hidden-xs">
+							<label class="text-right">Remove</label>
+						</div>
+					</div>
+					<div id="users-target"></div>
+            	</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="form-wizard">
+	<div class="step active ">
+        <div class="form-group form-actions">
+	       <a class="button" data-pjax href="<?php echo $this->url('api', array('id' => $userApi->api->id)) ?>"><span><i class="fa fa-angle-double-left"></i> Voltar</span></a>
+	       <a class="button" data-pjax href="<?php echo $this->url('api-connection', array('id' => $userApi->api->id)) ?>"><span>Próximo <i class="fa fa-angle-double-right"></i></span></a>
+		</div>
+	</div>
+</section>
+
+<script type="text/template" id="template-user">
+	<div class="row user bounceInRight animated" id="user_{{id_usuario}}">
+		<div class="col-sm-2 avatar">{{{gravatar}}}</div>
+		<div class="col-sm-3">
+			<div class="email">{{nome}} <span class="label {{permissao_label}}">{{permissao_title}}</span></div>
+		</div>
+		<div class="col-sm-3">
+			<a href="mailto:{{email}}" class="email">{{email}}</a>
+		</div>
+		<div class="col-sm-2">
+			<div class="email">{{username}}</div>
+		</div>
+		<div class="col-sm-2">
+			<div class="email">
+				{{#btn_delete}}
+				<button type="button" class="btn btn-danger btn-xs btn-delete-user" data-id="{{id_usuario}}"><i class="fa fa-times "></i></button>
+				{{/btn_delete}}
+			</div>
+		</div>
+	</div>
+</script>
+
+<?php
+$users = array();
+foreach ($this->users as $k => $user) {
+	$users[$k] = $user;
+	$users[$k]['gravatar'] = ($this->gravatar($user['email'] , array('img_size' => 50))->getImgTag());
+}
+?>
+
+<script type="text/javascript">
+$(function () {
+
+	function loadUser(user) {
+		user.btn_delete = true;
+		switch (user.permissao) {
+			case 'OWNER':
+				user.permissao_title = 'Owner';
+				user.permissao_label = 'label-success';
+				user.btn_delete = false;
+				break;
+			case 'EDIT':
+				user.permissao_title = 'Edit';
+				user.permissao_label = 'label-warning';
+				break;
+			default:
+				user.permissao_title = 'Access';
+				user.permissao_label = 'label-default';
+				break;
+		}
+		var template = $('#template-user').html();
+		Mustache.parse(template);   // optional, speeds up future uses
+		var rendered = Mustache.render(template, user);
+		$('#users #users-target').append(rendered);
+	}
+	
+	var users = <?php echo $this->json($users) ?>;
+	$.each(users, function( index, user ) {
+		setTimeout(function(){loadUser(user);}, index*200); 
+	});
+	
+    $('#form-api-share').validate({
+    	submitHandler: function(form) {
+        	var form2 = $(form);
+    		sendAjax({
+    			form: form2,
+    			done: function(result) {
+        			if (result.data.user) {
+        				loadUser(result.data.user);
+    					var row = $('#user_'+result.data.user.id_usuario);
+    					row.addClass('bounceInRight animated');
+    					row.css('background', '#E3FFE5'); 
+      					setTimeout(function(){row.css('background', ''); }, 2000); 	
+      					form2.each (function(){this.reset();});
+        			}
+            	}
+        	});
+    	},
+    });
+
+    $('#users #users-target').on("click", ".btn-delete-user", function (e) {
+        var elem = $(this);
+        var row = elem.closest('div.row.user');
+		var id = elem.data('id');
+
+    	func_confirm_modal = function() {
+    		row.css('background', '#FFE3E3'); 
+    		var form = $('#form-api-share');
+    		sendAjax({
+    			url: form.attr('action') + '?' + $.param({id_usuario: id}),
+    			type: 'DELETE',
+    			done: function(result) {
+    				row.addClass('bounceOutRight animated'); 
+  					setTimeout(function(){row.remove();}, 750);
+    			},
+    			always: function(result) {
+    				row.css('background', '');
+    			}
+    		});
+        };
+        showConfirmModal({title: 'Tem certeza de que deseja removar esse usuário?'});
+	});
+    
+
+    
+});
+</script>

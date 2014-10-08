@@ -7,10 +7,24 @@ use Zend\Db\TableGateway\Feature;
 abstract class AbstractTable extends AbstractTableGateway {
 
 	public function __construct() {
+		
 		$this->featureSet = new Feature\FeatureSet();
 		$this->featureSet->addFeature(new Feature\GlobalAdapterFeature());
+		$this->featureSet->addFeature(new Feature\MetadataFeature());
+		$this->featureSet->addFeature(new Feature\RowGatewayFeature(null, '\Application\Model\RowGateway'));
+		
+		
 		$this->initialize();
 	}
+	
+	/**
+	 * 
+	 * @return \Application\Model\RowGateway
+	 */
+	public function fetchNew() {
+	    return $this->getResultSetPrototype()->getArrayObjectPrototype();
+	}
+	
 	
 	public function save(array $set) {
 		

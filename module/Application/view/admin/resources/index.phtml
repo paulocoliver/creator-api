@@ -1,0 +1,177 @@
+<style>
+.col_tabela i.fa-exclamation-triangle {
+	color: #FF5607;
+}
+#modalEditResources .modal-body {
+	margin-left: 50px; margin-right: 50px; 
+}
+</style>
+<?php 
+if (!empty($this->error_msg_conexao)):
+?>
+<section class="form-wizard">
+	<div class="step active animated fadeInRightStep">
+		<div class="success">
+			<i class="fa fa-exclamation-triangle" style="font-size: 55px; color: #FF5607;"></i>
+			<h3><?php echo $this->translate($this->error_msg_conexao) ?></h3>
+		</div>
+		<div class="form-group form-actions">
+			<a class="button" data-pjax href="<?php echo $this->url('api-connection', array('id' => $userApi->api->id)) ?>"><span><i class="fa fa-angle-double-left"></i> Voltar</span></a>
+		</div>
+	</div>
+</section>
+<?php 
+else:
+?>
+<div class="container">
+	<div id="datatables">
+		<h1>Recursos <a href="<?php echo $this->url('api-resources-reload', array(), array(), true) ?>" class="btn btn-info pull-right" ><i class="fa fa-refresh"></i> Recarregar Metadados</a></h1>
+		<div class="content-wrapper" style="margin-top: 30px;">
+			<table id="datatable-example" class="bounceInRight animated">
+				<thead>
+					<tr>
+						<th tabindex="0" rowspan="1" colspan="1">Tabela</th>
+						<th tabindex="0" rowspan="1" colspan="1">Recurso</th>
+						<th tabindex="0" rowspan="1" colspan="1">Disponível</th>
+						<th tabindex="0" rowspan="1" colspan="1">Opções</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php 
+					foreach ($this->recursos as $recurso):
+						$id = $recurso->getId() ;
+						$ico = $recurso->getTipo() == 'VIEW' ? 'fa-eye' : 'fa-table';
+						$label_status = $recurso->getDisponivel() == 'SIM' ? 'label-success' : 'label-warning';
+					?>
+					<tr id="row_<?php echo $id ?>" data-id="<?php echo $id ?>">
+						<td class="col_tabela">
+							<i class="fa <?php echo $ico ?> fa-fw"></i>
+							<span><?php echo $recurso->getDb_table() ?></span>
+							<?php 
+							if ($recurso->getStatus() == 'INVALIDO'):
+							?>
+							<i class="fa fa-exclamation-triangle"></i>
+							<?php 
+							endif;
+							?>
+						</td>
+						<td class="col_recurso"><?php echo $recurso->getResource() ?></td>
+						<td class="col_disponivel"><span class="label <?php echo $label_status ?>"><?php echo $recurso->getDisponivel() ?></span></td>
+						<td>
+							<div class="btn-group">
+								<button type="button" class="btn btn-default btn-sm btn-recurso-actions" title="" data-act="cols">
+									<i class="fa fa-list-ul fa-fw"></i> Campos
+								</button>
+								<button type="button" class="btn btn-default btn-sm btn-recurso-actions" title="" data-act="edit">
+									<i class="fa fa-pencil fa-fw"></i> Alterar
+								</button>
+								<button type="button"
+									class="btn btn-danger btn-sm btn-recurso-actions" title="" data-act="del">
+									<i class="fa fa-times fa-fw"></i>Apagar
+								</button>
+							</div>
+						</td>
+					</tr>
+					<?php 
+					endforeach;
+					?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div id="modalCols" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h3 class="modal-title" id="myModalLabel">Campos</h3>
+			</div>
+			<div class="modal-body">
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="modalEditResources" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h3 class="modal-title" id="myModalLabel">Alterar Recurso</h3>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button id="modalEditResourcesSubmit" type="button" class="btn btn-info btn-lg">Salvar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="modalEditValidator" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h3 class="modal-title" id="myModalLabel">Validadores</h3>
+			</div>
+			<div class="modal-body">
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$('.col_tabela i.fa-exclamation-triangle').tooltip({
+	title: 'Esta tabela não existe mais no banco de dados'	
+});
+
+$(function() {
+	$('#datatable-example').dataTable({
+		"sPaginationType": "full_numbers",
+		"iDisplayLength": 20
+	});
+});
+$("#modalEditResourcesSubmit").on('click', function(e) {
+	$("#form_recurso").submit();
+});
+$(".btn-recurso-actions").on('click', function(e) {
+	var elm = $(this);
+	var id_rec = elm.closest('tr').data('id');
+	var act = elm.data('act');
+
+	if (act == 'cols') {
+		$.get("<?php echo $this->url('api-resources-columns', array(), array(), true) ?>/"+id_rec, function( data ) {
+			//console.log(jqXHR.getAllResponseHeaders());
+			$('#modalCols .modal-body').html(data);
+			$('#modalCols').modal('show');
+		});
+	} else if (act == 'edit') {
+		$.get("<?php echo $this->url('api-resources-edit', array(), array(), true) ?>/"+id_rec, function(data) {
+			$('#modalEditResources .modal-body').html(data);
+			$('#modalEditResources').modal('show');
+		});
+
+	} else if (act == 'del') {
+		sendAjax({
+			url: "<?php echo $this->url('api-resources-edit', array(), array(), true) ?>/"+id_rec,
+			type: 'DELETE',
+			/*done: function(result) {
+				row.addClass('bounceOutRight animated'); 
+					setTimeout(function(){row.remove();}, 750);
+			},
+			always: function(result) {
+				row.css('background', '');
+			}*/
+		});
+	}
+	
+});
+</script>
+
+<?php
+endif;
+?>

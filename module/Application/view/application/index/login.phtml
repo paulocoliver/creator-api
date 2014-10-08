@@ -1,0 +1,36 @@
+<div id="signin">
+    <a href="<?php echo $this->url('index') ?>" class="logo">
+    	<i class="fa fa-cloud-upload"></i>
+    </a>
+    
+    <h3>Login</h3>
+    
+    <div class="content">
+        <form action="<?php echo $this->serverurl(true) ?>" method="post">
+    		<div class="fields">
+    			<strong>Email </strong>
+    			<input class="form-control" type="email" name="email" placeholder="Your email" required="required"/>
+    		</div>
+    		<div class="fields">
+    			<strong>Password</strong>
+    			<input class="form-control" type="password" name="senha" placeholder="Password" required="required"/>
+    		</div>
+    		<div class="info">
+    			<label>
+    				<input type="checkbox" name="remember" checked />
+    				Remember me
+    			</label>
+    		</div>
+    		<div class="actions">
+    			<button type="submit" class="btn btn-primary btn-lg">Entre na sua conta</button>
+    		</div>
+    	</form>
+    </div>
+    
+    <div class="bottom-wrapper">
+    	<div class="message">
+    		<span>Don't have an account?</span>
+    		<a href="<?php echo $this->url('register') ?>">Sign up here</a>.
+    	</div>
+    </div>
+</div>
