@@ -20,6 +20,8 @@ class Entity extends AbstractService
 		'Recurso' 		=> 'Application\Model\Recurso',
 		'Coluna' 		=> 'Application\Model\Coluna',
 		'Constraint'	=> 'Application\Model\Constraint',
+		'Validador'		=> 'Application\Model\Validador',
+		'ColunaValidador' => 'Application\Model\ColunaValidador',
 	);
 	
 	public function setEntityManager(EntityManager $em)

@@ -11,4 +11,7 @@ return array(
     'form_error' => 'Valores invalidos',
     'conexao_nao_cadastrada' => 'Escolha uma conexão antes de prosseguir',
     'error_connecting' => 'Não foi possível conectar no banco de dados, reveja os dados da conexão',
+	'email_existe' => 'E-mail já está cadastrado',
+	'username_existe' => 'Username já está cadastrado',
+	'error_register' => 'Error Register.',
 );

@@ -66,11 +66,81 @@ class Usuario extends EntityAbstract
     private $apiCollection;
     
     
-	public function getConexao()
-	{
+	public function getId() {
+		return $this->id;
+	}
+
+	public function setId($id) {
+		$this->id = $id;
+		return $this;
+	}
+
+	public function getNome() {
+		return $this->nome;
+	}
+
+	public function setNome($nome) {
+		$this->nome = $nome;
+		return $this;
+	}
+
+	public function getEmail() {
+		return $this->email;
+	}
+
+	public function setEmail($email) {
+		$this->email = $email;
+		return $this;
+	}
+
+	public function getSenha() {
+		return $this->senha;
+	}
+
+	public function setSenha($senha) {
+		$this->senha = $senha;
+		return $this;
+	}
+
+	public function getUsername() {
+		return $this->username;
+	}
+
+	public function setUsername($username) {
+		$this->username = $username;
+		return $this;
+	}
+
+	public function getToken() {
+		return $this->token;
+	}
+
+	public function createToken() {
+		return md5(uniqid(rand(), true));
+	}
+	
+	public function setToken($token) {
+		$this->token = $token;
+		return $this;
+	}
+
+	public function getConexao() {
 	    return $this->conexao;
-	}    
-        
+	}
+	    
+	public function setConexao($conexao) {
+		$this->conexao = $conexao;
+		return $this;
+	}
+	
+	public function getApiCollection() {
+		return $this->apiCollection;
+	}
+
+	public function setApiCollection($apiCollection) {
+		$this->apiCollection = $apiCollection;
+		return $this;
+	}
 
     /**
      * Configura os filtros dos campos da entidade

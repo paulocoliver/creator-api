@@ -51,6 +51,10 @@ class DbExternoApi extends Entity
 				'options' => array(
 					'buffer_results' => true,
 				),
+				'charset' => 'UTF8',
+				 'driver_options' => array(
+			    		1002 => 'SET NAMES \'UTF8\''
+			    ),
 			));
 			
 			try {
@@ -124,7 +128,8 @@ class DbExternoApi extends Entity
 						$row_coluna = new Model\Coluna();
 						$row_coluna->setRecurso($row_recurso);
 						$row_coluna->setNome($columnName->getName());
-						$row_coluna->setDisponivel('SIM');
+						$row_coluna->setInsert($tipo == 'VIEW' ? 'NAO' : 'SIM');
+						$row_coluna->setSelect('SIM');
 						$row_coluna->setTipo($columnName->getDataType());
 					}
 					$row_coluna->setStatus('VALIDO');
@@ -139,8 +144,9 @@ class DbExternoApi extends Entity
 			$qb = $repositoryRecurso->createQueryBuilder('r');
 			$qb->update()
 				->set('r.status', $qb->expr()->literal('INVALIDO'))
-				->where('r.id NOT IN (:ids)')
-				->setParameters(array('ids' => $recursos_validos))
+				->where('r.api = :api')
+				->andWhere('r.id NOT IN (:ids)')
+				->setParameters(array('ids' => $recursos_validos, 'api' => $api))
 				->getQuery()->execute();
 			
 			$repositoryConstraint  = $this->getRepository('Constraint');

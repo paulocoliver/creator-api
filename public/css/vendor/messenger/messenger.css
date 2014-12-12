@@ -42,7 +42,7 @@ ul.messenger .messenger-message ul, ul.messenger .messenger-message ol {
 /* line 36, ../../src/sass/messenger.sass */
 ul.messenger.messenger-fixed {
   position: fixed;
-  z-index: 10000;
+  z-index: 9999999;
 }
 /* line 40, ../../src/sass/messenger.sass */
 ul.messenger.messenger-fixed .messenger-message {

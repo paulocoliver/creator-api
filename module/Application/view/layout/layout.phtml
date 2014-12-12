@@ -7,18 +7,26 @@
 <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
 	
 <!-- stylesheets -->
-<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/images/favicon.ico'))
                 ->appendStylesheet($this->basePath() . '/css/compiled/theme.css')
+                ->appendStylesheet($this->basePath() . '/css/vendor/animate.css')
                 ->appendStylesheet($this->basePath() . '/css/vendor/brankic.css')
                 ->appendStylesheet($this->basePath() . '/css/vendor/ionicons.min.css')
                 ->appendStylesheet($this->basePath() . '/css/vendor/font-awesome.min.css') 
+                ->appendStylesheet($this->basePath() . '/css/vendor/messenger/messenger.css')
+                ->appendStylesheet($this->basePath() . '/css/vendor/messenger/messenger-theme-flat.css')
 ?>
 
 <!-- javascript -->
 <?php echo $this->headScript()
-                ->appendFile('http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js')
-                ->appendFile($this->basePath() . 'js/bootstrap/bootstrap.min.js') 
-                ->appendFile($this->basePath() . 'js/theme.js') 
+				->appendFile($this->basePath() . '/js/vendor/jquery.min.js')
+				->appendFile($this->basePath() . '/js/bootstrap/bootstrap.min.js')
+                ->appendFile($this->basePath() . '/js/bootstrap/bootstrap.min.js') 
+				->appendFile($this->basePath() . '/js/vendor/jquery.cookie.js')
+                ->appendFile($this->basePath() . '/js/theme.js') 
+                ->appendFile($this->basePath() . '/js/vendor/jquery.validate.min.js')
+                ->appendFile($this->basePath() . '/js/vendor/messenger/messenger.min.js')
+                ->appendFile($this->basePath() . '/js/vendor/messenger/messenger-theme-flat.js')
                 ->appendFile('http://html5shim.googlecode.com/svn/trunk/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
 ?>
 	
@@ -50,40 +58,122 @@
 	<?php echo $this->content; ?>
 	
     <?php echo $this->inlineScript() ?>
-
-    <?php 
-    /*echo '<pre>';
-    print_r($this->flashmessenger()->getMessages());
-    echo '</pre>';*/ 
-    
-//     echo '<pre>';
-//     print_r($flashMessenger = $this->flashMessenger());
-//     echo '</pre>';
-    /*
-    
-    <div class="signup-switcher">
-    	<a href="#" class="active" data-class="clear">
-    		<i class="fa fa-check"></i>
-    		Clear
-    	</a>
-    	<a href="#" data-class="">
-    		<i class="fa fa-check"></i>
-    		Dark
-    	</a>
-    </div>
+    <div id="loading"><i class="fa fa-circle-o-notch fa-spin"></i></div>
 	<script type="text/javascript">
+		function sendAjax(params) {
+	
+			if (!params.done) params.done = function(){};
+			if (!params.nosuccess) params.nosuccess = function(){};
+			if (!params.always) params.always = function(){};
+	
+			if (!params.fail)
+				params.fail = function(){
+					Messenger().post({message: 'Oops...Ocorreu um problema na resposta do servidor', type: 'error', showCloseButton: true});
+				};
+	
+			if (params.form) {
+				if (!params.url) params.url = params.form.attr('action');
+				if (!params.data) params.data = params.form.serialize();
+			}	
+			
+			if (!params.data) params.data = {};
+			if (!params.type) params.type = 'POST';
+	
+			if (!params.url) {
+				Messenger().post({message: 'Oops...Ocorreu um problema na requisição ao servidor', type: 'error', showCloseButton: true});
+				return;
+			}
+				
+			
+			$.ajax({
+				url: params.url,
+				type: params.type,
+				data: params.data,
+				dataType: 'json'
+			}).done(function(result) {
+				if (result.msg)
+					Messenger().post({
+						message: result.msg,
+						type: result.success ? 'success' : 'error',
+						showCloseButton: true
+					});
+				
+				if (result.success)
+					params.done(result);
+				else
+					params.nosuccess(result);
+						
+			})
+			.fail(params.fail)
+			.always(params.always);
+		}
+	
 		$(function () {
-			var $switcher = $(".signup-switcher a");
-			$switcher.click(function (e) {
-				e.preventDefault();
-				$switcher.removeClass("active");
-				$(this).addClass("active");
-				$("body").attr("class", $(this).data("class"));
+
+			$(document).ajaxSend(function() {
+				$('#loading').show();
 			});
+			$(document).ajaxComplete(function( event,request, settings ) {
+				$('#loading').hide();
+			});
+
+			Messenger.options = {
+			    extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+			    theme: 'flat'
+			    //extraClasses: 'messenger-fixed messenger-on-top messenger-on-center',
+			    //theme: 'future',
+			    
+			};
+
+			
+			$.validator.addMethod("checkURL", function(value) {
+				var patt = new RegExp(/^([a-z]|\d|-){6,30}$/);
+				return patt.test(value);
+			}, 'Deve ter de 6 - 30 caracteres. Com letras, números ou -.');
+
+			$.validator.setDefaults({
+				errorElement: "label",
+			    errorClass: "error",
+				highlight: function(element) {
+				    //$(element).closest('.control-group').children('div[class="help-block"]').hide();
+
+					//$(element).closest('.form-group').next('div[class="help-block"]').hide();
+					$(element).closest('.form-group').addClass('has-error');
+			    },
+			    success: function(element) {
+				      //$(element).closest('.control-group').children('div[class="help-block"]').show();
+				      //element.addClass('valid').closest('.control-group').removeClass('error');
+				    var group = $(element).closest('.form-group'); 
+					group.removeClass('has-error');
+					group.find('label.error').remove(); 
+				},
+				errorPlacement: function(error, element) {
+					//$(element).after(error);
+					$(element).closest('.form-group').append(error);
+
+				}
+			});
+
+			<?php 
+			$flashmessenger = array(
+				'info'    => $this->flashmessenger()->getInfoMessages(),
+				'error'   => $this->flashmessenger()->getErrorMessages(),
+				'success' => $this->flashmessenger()->getSuccessMessages(),
+			);
+			foreach ($flashmessenger as $type => $messages):
+			    foreach ($messages as $message):
+			?>
+			    Messenger().post({
+					  message: '<?php echo $this->escapejs($this->translate($message)) ?>',
+					  type: '<?php echo $type ?>',
+					  showCloseButton: true
+				});
+			<?php
+			    endforeach;
+			endforeach;
+			?>
 		});
 	</script>
-	*/
-    ?>
 </body>
 </html>
 

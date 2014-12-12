@@ -4,6 +4,7 @@ namespace Admin\Controller;
 use Zend\View\Model\ViewModel;
 use Application\Form;
 use Application\Model;
+use Zend\Validator\Db\NoRecordExists as DbNoRecordExists;
 
 class ApiController extends AbstractController
 {
@@ -38,14 +39,26 @@ class ApiController extends AbstractController
         	}
         	
         	$form = new Form\Api();
-        	$form->bind($api);
+        	$form->setData($api->toArray());
             
             if ($this->request->isPost()) {
             	
 	    		$form->setInputFilter($api->getInputFilter());
-	    		$form->setData($this->request->getPost());
+	    		$post = $this->request->getPost();
+	    		$form->setData($post);
 	    		if ($form->isValid()) {
 					$data = $form->getData();
+					
+					if ($api->url != $data['url']) {
+						$validator = new DbNoRecordExists(array(
+							'table'   => 'api',
+							'field'   => 'url',
+							'adapter' => $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter')
+						));
+						if (!$validator->isValid( $data['url'] ))
+							throw new \Exception('URL já utilizada por outra API, informe uma nova URL.');
+					}
+					
 		    		$api->setData($data);
 		    		$this->getEntityManager()->persist($api);
 		    		$this->getEntityManager()->flush();
@@ -64,6 +77,16 @@ class ApiController extends AbstractController
 		    		
 	    		} else
 					throw new \Exception('form_error');
+            } elseif ($this->request->isDelete()) {
+            	
+            	if (empty($api->getId()) || $user_api->getPermissao() != 'OWNER')
+            		throw new \Exception('not_found');
+            	
+            	$this->getEntityManager()->remove($api);
+            	$this->getEntityManager()->flush();
+            	
+            	return $this->sendJson(true, 'del_ok');
+            	
             }
         
         } catch (\Exception $e) {

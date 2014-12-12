@@ -1,0 +1,45 @@
+<?php
+$form->setAttribute('action', $this->url(null, array(), array(), true));
+echo $this->form()->openTag($form);
+?>
+<span class="label label-info">Campo: <?php echo $column->getNome() ?></span>
+<br><br>
+<div class="row">
+	<div class="col-md-5 col-md-offset-1">
+		<div class="form-group ">
+			<label class="center-block">GET (Leitura)</label>
+			<?php echo $this->formElement($form->get('_select')) ?>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group ">
+			<label class="center-block">POST - PUT (Adicionar - Alterar)</label>
+			<?php echo $this->formElement($form->get('_insert')) ?>
+		</div>
+	</div>
+</div>
+<?php 
+echo $this->form()->closeTag();
+?>
+<script type="text/javascript">
+$('#form_coluna').validate({
+	submitHandler: function(form) {
+		sendAjax({
+			form: $(form),
+			done: function(result) {
+				$('#modalEditCols').modal('hide');
+        	}
+    	});
+	},
+});
+
+$('#_select_switch, #_insert_switch').bootstrapSwitch({
+	"size": "normal",
+	"animate": true,
+	"indeterminate": true,
+	"onColor": "success",
+	"offColor": "danger",
+	"onText": "Ativo",
+	"offText": "Inativo"
+});
+</script>

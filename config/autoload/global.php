@@ -64,5 +64,12 @@ return array(
 		'max_execution_time'            => 60,
 		'date.timezone'                 => 'America/New_York',
 		'mbstring.internal_encoding'    => 'UTF-8',
+		'session.cookie_domain' => '.criadorapi.com',
+		'session.cookie_path' => '/',
+		'session.cookie_lifetime' => 172800, # 20 dias
+		'session.cookie_httponly' => true,
+		'session.use_cookies' => true,
+		'session.use_only_cookies' => true,
+		'session.gc_maxlifetime' => 172800,
 	),
 );

@@ -7,7 +7,7 @@
 <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
 	
 <!-- stylesheets -->
-<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/images/favicon.ico'))
                 ->appendStylesheet($this->basePath() . '/css/compiled/theme.css')
                 ->appendStylesheet($this->basePath() . '/css/vendor/animate.css')
                 ->appendStylesheet($this->basePath() . '/css/vendor/brankic.css')
@@ -39,40 +39,38 @@
                 ->appendFile('http://html5shim.googlecode.com/svn/trunk/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
 ?>     
 <style type="text/css">
-#loading {
-	background-color: rgba(165, 165, 165, 0.51); width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 2000; display: none;
-}
-#loading i {
-	position: fixed; left: 50%; top: 50%; color: #FFF; font-size: 22px; margin-top: -40px; margin-left: -10px;
-}
 </style>
 </head>
 <body>
     <div id="wrapper">
 		<div id="sidebar-default" class="main-sidebar">
 			<div class="current-user">
-				<a href="index.html" class="name">
+				<a href="<?php echo $this->url('user-info') ?>" data-pjax class="name">
 					<?php echo $this->gravatar($this->user->email, array(), array('class' => 'avatar')) ?>
 					<span>
-						<?php echo $this->user->nome ?>
+						<?php echo $this->escapehtml(current(explode(' ', $this->user->nome))) ?>
 						<i class="fa fa-chevron-down"></i>
 					</span>
 				</a>
 				<ul class="menu">
 					<li>
-						<a href="account-profile.html">Account settings</a>
+						<a href="<?php echo $this->url('user-info') ?>" data-pjax >Account settings</a>
+					</li>
+					<?php
+					/*
+					<li>
+						<a href="#">Billing</a>
 					</li>
 					<li>
-						<a href="account-billing.html">Billing</a>
+						<a href="#">Notifications</a>
 					</li>
 					<li>
-						<a href="account-notifications.html">Notifications</a>
+						<a href="#">Help / Support</a>
 					</li>
+					*/
+					?>
 					<li>
-						<a href="account-support.html">Help / Support</a>
-					</li>
-					<li>
-						<a href="signup.html">Sign out</a>
+						<a href="<?php echo $this->url('logout') ?>">Sign out</a>
 					</li>
 				</ul>
 			</div>
@@ -86,7 +84,7 @@
 						</a>
 					</li>
 					<li>
-						<a href="<?php //echo $this->url('apis') ?>" data-pjax>
+						<a href="<?php echo $this->url('public-apis') ?>" data-pjax>
 							<i class="fa fa-search fa-fw"></i> 
 							<span>APIS Públicas</span>
 						</a>
@@ -119,7 +117,7 @@
 							<!-- <li><a href="#">3 features added</a></li> -->
 						</ul>
 					</li>
-					<li><a href="signup.html"><i class="ion-log-out"></i></a></li>
+					<li><a href="<?php echo $this->url('logout') ?>" title="Logout"><i class="ion-log-out"></i></a></li>
 				</ul>
 			</div>
 		</div>
@@ -181,9 +179,7 @@
 	  	<div class="modal-dialog">
 		    <div class="modal-content">
 		      	<div class="modal-body">						
-		        	<h4 class="modal-title">
-		        		Tem certeza de que deseja removar esse item?
-		        	</h4>
+		        	<h4 class="modal-title"></h4>
 		      	</div>
 		      	<div class="modal-footer">
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -228,15 +224,26 @@
 	});
 	function showConfirmModal(params) {
 		var md = $('#confirm-modal');
-		var title = md.find('.modal-title');
-		var body  = md.find('.modal-body');
+		var body = md.find('.modal-title');
+		var btn  = md.find('.btn-confirm-modal');
 		
-		if (params.title)
-			md.find('.modal-title').html(params.title);
+		if (!params.btn)
+			params.btn = {val:null, cls: null};
+		
+		if (!params.title)
+			params.title = 'Tem certeza de que deseja removar esse item?';
 
-		if (body.html() == '')
-			body.addClass();
+		if (!params.btn.val)
+			params.btn.val = 'Yes, delete it';
+
+		if (!params.btn.cls)
+			params.btn.cls = 'btn-danger';
+
+		btn.removeClass('btn-default btn-primary btn-success btn-info btn-warning btn-danger btn-link');
+		btn.addClass(params.btn.cls);
+		btn.html(params.btn.val);
 		
+		body.html(params.title);
 		md.modal('show');
 	}
 

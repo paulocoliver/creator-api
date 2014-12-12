@@ -12,7 +12,7 @@ return array(
 		'routes' => array(
             ## Site
 			'index' => array(
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'type' => 'Literal',
 				'options' => array(
 					'route'    => '/',
 					'defaults' => array(
@@ -22,7 +22,7 @@ return array(
 				),
 			),
 			'login' => array(
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'type' => 'Literal',
 				'options' => array(
 					'route'    => '/login',
 					'defaults' => array(
@@ -32,7 +32,7 @@ return array(
 				),
 			),
 			'register' => array(
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'type' => 'Literal',
 				'options' => array(
 					'route'    => '/register',
 					'defaults' => array(
@@ -41,8 +41,48 @@ return array(
 					),
 				),
 			),
+			'logout' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route'    => '/logout',
+					'defaults' => array(
+						'controller' => 'Application\Controller\Index',
+						'action'     => 'logout',
+					),
+				),
+			),
+			'user-info' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route'    => '/user-info',
+					'defaults' => array(
+						'controller' => 'Admin\Controller\Index',
+						'action'     => 'user-info',
+					),
+				),
+			),
+			'user-token' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route'    => '/user-token',
+					'defaults' => array(
+						'controller' => 'Admin\Controller\Index',
+						'action'     => 'user-token',
+					),
+				),
+			),
+			'public-apis' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route'    => '/public-apis',
+					'defaults' => array(
+						'controller' => 'Admin\Controller\Index',
+						'action'     => 'public-apis',
+					),
+				),
+			),
 			'apis' => array(
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'type' => 'Literal',
 				'options' => array(
 					'route'    => '/apis',
 					'defaults' => array(
@@ -122,6 +162,36 @@ return array(
 					),
 				),
 			),
+			'api-resources-columns-edit' => array(
+				'type' => 'Segment',
+				'options' => array(
+					'route'    => '/api-resources-columns-edit/:id[/:id_column]',
+					'defaults' => array(
+						'controller' => 'Admin\Controller\Resources',
+						'action'     => 'columns-edit',
+					),
+				),
+			),
+			'api-resources-columns-validators' => array(
+				'type' => 'Segment',
+				'options' => array( 
+					'route'    => '/api-resources-columns-validators/:id[/:id_resource[/:id_column]]',
+					'defaults' => array(
+						'controller' => 'Admin\Controller\Resources',
+						'action'     => 'columns-validators',
+					),
+				),
+			),
+			'api-resources-columns-validators-add' => array(
+				'type' => 'Segment',
+				'options' => array( 
+					'route'    => '/api-resources-columns-validators-add/:id[/:id_column[/:id_validator]]',
+					'defaults' => array(
+						'controller' => 'Admin\Controller\Resources',
+						'action'     => 'columns-validators-add',
+					),
+				),
+			),
 			'connection' => array(
 				'type' => 'Segment',
 				'options' => array( 
@@ -144,11 +214,10 @@ return array(
 			),
 			## API
 			'host-api' => array(
-				'type'    => 'Hostname',
+				'type' => 'Hostname',
 				'options' => array(
-					'route'    => ':api.api.criadorapi.com',
+					'route' => ':api.api.criadorapi.com[:port]',
 					'defaults' => array(
-						'controller'    => 'Api\Controller\Index',
 					),
 				),
 				'may_terminate' => true,
@@ -157,11 +226,9 @@ return array(
 						'type'    => 'Segment',
 						'options' => array(
 							'route'    => '/',
-							'constraints' => array(
-								'recurso' => '[a-zA-Z][a-zA-Z0-9_-]*',
-							),
 							'defaults' => array(
-								'action'     => 'index',
+								'controller' => 'Api\Controller\Doc',
+								'action'     => 'doc',
 							),
 						),
 					),
@@ -172,35 +239,12 @@ return array(
 							'constraints' => array(
 								'recurso' => '[a-zA-Z][a-zA-Z0-9_-]*',
 							),
-							'defaults' => array(),
+							'defaults' => array(
+								'controller' => 'Api\Controller\Api',
+							),
 						),
 					),
 				
-				),
-			),
-			## DOC
-			'host-doc' => array(
-				'type'    => 'Hostname',
-				'options' => array(
-					'route'    => ':api.doc.localhost',
-					'defaults' => array(
-						'controller'    => 'Api\Controller\Index',
-					),
-				),
-				'may_terminate' => true,
-				'child_routes' => array(
-					'index' => array(
-						'type'    => 'Segment',
-						'options' => array(
-							'route'    => '/',
-							'constraints' => array(
-								'recurso' => '[a-zA-Z][a-zA-Z0-9_-]*',
-							),
-							'defaults' => array(
-								'action'     => 'index',
-							),
-						),
-					),
 				),
 			),
         ),
@@ -250,12 +294,14 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Application\Controller\Index' 	=> 'Application\Controller\IndexController',
-            'Api\Controller\Index'  => 'Api\Controller\IndexController',
             /* Admin */
             'Admin\Controller\Index' => 'Admin\Controller\IndexController',
             'Admin\Controller\Api' => 'Admin\Controller\ApiController',
             'Admin\Controller\Connection' => 'Admin\Controller\ConnectionController',
             'Admin\Controller\Resources' => 'Admin\Controller\ResourcesController',
+        	/*Api*/
+            'Api\Controller\Api' => 'Api\Controller\ApiController',
+            'Api\Controller\Doc' => 'Api\Controller\DocController',
         ),
     ),
     'view_manager' => array(
@@ -275,7 +321,8 @@ return array(
         ),
         'strategies' => array(
         	'ViewJsonStrategy',
-        	'ViewFeedStrategy'
+        	'ViewFeedStrategy',
+        	'ViewXmlStrategy'
         ),
     ),
     'view_helpers' => array(

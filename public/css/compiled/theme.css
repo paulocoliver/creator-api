@@ -25,6 +25,13 @@ a:focus,button:focus,input[type="submit"]:focus {
 	outline: none !important;
 }
 
+#loading {
+	background-color: rgba(165, 165, 165, 0.51); width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 2000000; display: none;
+}
+#loading i {
+	position: fixed; left: 50%; top: 50%; color: #FFF; font-size: 22px; margin-top: -40px; margin-left: -10px;
+}
+
 .bg1 {
 	background: #9795bb;
 	background-image: -webkit-radial-gradient(circle farthest-side at right bottom, #9795bb,
@@ -425,7 +432,7 @@ textarea.form-control:focus {
 
 form label.error {
 	position: relative !important;
-	display: inline-block !important;
+	display: inline-block;
 	margin-top: 5px !important;	
 	margin-bottom: -8px !important;
 	color: #fff !important;
@@ -5098,7 +5105,7 @@ body.open-sidebar #wrapper #content {
 	}
 }
 
-#users  form.search {
+#content  form.search {
 	position: relative;
 	float: left;
 	width: 260px;
@@ -5106,7 +5113,7 @@ body.open-sidebar #wrapper #content {
 	margin-left: 170px;
 }
 
-#users  form.search .fa-search {
+#content  form.search .fa-search {
 	position: absolute;
 	color: #BBB;
 	top: 7px;
@@ -5114,39 +5121,39 @@ body.open-sidebar #wrapper #content {
 	font-size: 16px;
 }
 
-#users  form.search input[type="text"] {
+#content  form.search input[type="text"] {
 	border: 0;
 	padding: 6px 15px 6px 37px;
 	border-radius: 3px;
 	width: 100%;
 }
 
-#users  form.search input[type="text"]::-webkit-input-placeholder
+#content  form.search input[type="text"]::-webkit-input-placeholder
 	{
 	font-weight: normal;
 	font-family: "Lato", "Helvetica Neue", Arial;
 	color: #9B9B9B;
 }
 
-#users  form.search input[type="text"]:-moz-placeholder {
+#content  form.search input[type="text"]:-moz-placeholder {
 	font-weight: normal;
 	font-family: "Lato", "Helvetica Neue", Arial;
 	color: #9B9B9B;
 }
 
-#users  form.search input[type="text"]::-moz-placeholder {
+#content  form.search input[type="text"]::-moz-placeholder {
 	font-weight: normal;
 	font-family: "Lato", "Helvetica Neue", Arial;
 	color: #9B9B9B;
 }
 
-#users  form.search input[type="text"]:-ms-input-placeholder {
+#content  form.search input[type="text"]:-ms-input-placeholder {
 	font-weight: normal;
 	font-family: "Lato", "Helvetica Neue", Arial;
 	color: #9B9B9B;
 }
 
-#users  form.search input[type="submit"] {
+#content  form.search input[type="submit"] {
 	visibility: hidden;
 	position: absolute;
 }
@@ -6518,7 +6525,7 @@ body.open-sidebar #wrapper #content {
 
 #projects .project .info .category {
 	font-weight: 600;
-	color: #444;
+	color: #8E8E8E;
 }
 
 #projects .project .info .last-update {
@@ -9717,6 +9724,15 @@ body.open-sidebar #wrapper #content {
 	font-size: 21px;
 	position: relative;
 	top: 3px;
+}
+
+#account #content #sidebar .menu li a i.ion-key{
+	font-size: 21px;
+	position: relative;
+	top: -4px; left: -14px;
+	-ms-transform: rotate(-140deg); /* IE 9 */
+    -webkit-transform: rotate(-140deg); /* Chrome, Safari, Opera */
+    transform: rotate(-140deg);
 }
 
 #account #content #panel {

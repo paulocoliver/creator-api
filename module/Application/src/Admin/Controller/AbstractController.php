@@ -83,7 +83,10 @@ abstract class AbstractController extends AbstractActionController
 		if (empty($this->_user)) {
 			$auth = $this->getService('Auth\Admin');
 			$data = $auth->getIdentity();
-			$this->_user = $this->getRepository('Usuario')->find($data->id);
+			if (!empty($data))
+				$this->_user = $this->getRepository('Usuario')->find($data->id);
+			else 
+				$this->_user = new \Application\Model\Usuario();
 		}
 		return $this->_user;
 	}
@@ -93,8 +96,7 @@ abstract class AbstractController extends AbstractActionController
 	 */
 	public function getUserApi($api) {
 		try {
-			$res = $this->getRepository('UsuarioApi')
-			->findOneBy(array('usuario' => $this->getUser()->id, 'api' => $api));
+			$res = $this->getRepository('UsuarioApi')->findOneBy(array('usuario' => $this->getUser()->id, 'api' => $api));
 			if (empty($res))
 				throw new \Exception();
 	

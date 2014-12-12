@@ -10,7 +10,8 @@ class ApiUsers extends AbstractHelper
         $sql = "SELECT usuario_acesso_api.*, usuario.nome AS nome, usuario.email AS email, usuario.username AS username
         		FROM usuario_acesso_api
         		INNER JOIN usuario ON usuario.id = usuario_acesso_api.id_usuario
-        		WHERE id_api = :id_api";
+        		WHERE id_api = :id_api
+        		ORDER BY permissao";
         return $this->getService('Doctrine\ORM\EntityManager')->getConnection()->fetchAll($sql, array('id_api' => $id_api));
     }
 }

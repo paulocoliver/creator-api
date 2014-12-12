@@ -12,15 +12,19 @@
     			<input class="form-control" type="email" name="email" placeholder="Your email" required="required"/>
     		</div>
     		<div class="fields">
-    			<strong>Password</strong>
+    			<strong>Senha</strong>
     			<input class="form-control" type="password" name="senha" placeholder="Password" required="required"/>
     		</div>
+    		<?php
+    		/* 
     		<div class="info">
     			<label>
     				<input type="checkbox" name="remember" checked />
     				Remember me
     			</label>
     		</div>
+    		*/
+    		?>
     		<div class="actions">
     			<button type="submit" class="btn btn-primary btn-lg">Entre na sua conta</button>
     		</div>
@@ -29,8 +33,8 @@
     
     <div class="bottom-wrapper">
     	<div class="message">
-    		<span>Don't have an account?</span>
-    		<a href="<?php echo $this->url('register') ?>">Sign up here</a>.
+    		<span>Não tem uma conta?</span>
+    		<a href="<?php echo $this->url('register') ?>">Registe-se aqui</a>.
     	</div>
     </div>
 </div>

@@ -1,17 +1,11 @@
-
+<span class="label label-info">Recurso: <?php echo $this->resource->getResource() ?></span>
+<br><br>
 <table class="table table-striped">
 	<thead>
 		<tr>
-			<th>Campo</th>
-			<th>Tipo</th>
-			<th>Disponível</th>
-			<?php 
-			if ($this->resource->getTipo() == 'TABLE'):
-			?>
-			<th>Validadores</th>
-			<?php 
-			endif;
-			?>
+			<th style="width: 30%;">Campo</th>
+			<th style="width: 30%;">Tipo</th>
+			<th style="width: 40%;">Ações</th>
         </tr>
 	</thead>
 	<tbody>
@@ -22,36 +16,18 @@
 		<td><?php echo $coluna->getNome() ?></td>
 		<td><?php echo $coluna->getTipo() ?></td>
 		<td>
-			<input class="coluna_disponivel_checkbox" type="checkbox" value="SIM" <?php echo $coluna->getDisponivel() == 'SIM' ? 'checked="checked"' : '' ?> >
+			<?php 
+			if ($this->resource->getTipo() == 'TABLE'):
+			?>
+				<button type="button" class="btn btn-default btn-sm" onclick="showModalValidators('<?php echo $resource->getId() ?>', '<?php echo $coluna->getId() ?>')"><i class="fa fa-check-square-o fa-fw"></i> Validadores</button>
+			<?php 
+			endif;
+			?>
+			<button type="button" class="btn btn-default btn-sm" onclick="showModalEditCols('<?php echo $coluna->getId() ?>')"><i class="fa fa-pencil fa-fw"></i> Opções</button>
 		</td>
-		<?php 
-		if ($this->resource->getTipo() == 'TABLE'):
-		?>
-		<td>
-			<button type="button" class="btn btn-default btn-sm btn-edit-validator" data-id="<?php echo $coluna->getId() ?>"><i class="fa fa-pencil fa-fw"></i> Alterar</button>
-		</td>
-		<?php 
-		endif;
-		?>
 	</tr>
 	<?php 
 	endforeach;
 	?>
 	</tbody>
 </table>
-<script type="text/javascript">
-$('.coluna_disponivel_checkbox').bootstrapSwitch({
-		"size": "small",
-		"animate": true,
-		"indeterminate": true,
-		"onColor": "success",
-		"offColor": "danger",
-		"onText": "Sim",
-		"offText": "Não"
-});
-$(".btn-edit-validator").on('click', function(e) {
-	var elm = $(this);
-	var id = elm.data('id');
-	alert(id);
-});
-</script>

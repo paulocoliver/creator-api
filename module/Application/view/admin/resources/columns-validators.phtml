@@ -1,0 +1,57 @@
+<span class="label label-info">Campo: <?php echo $column->getNome() ?></span>
+<br><br>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th style="width: 50%">Validador</th>
+			<th style="width: 50%;">Actions</th>
+        </tr>
+	</thead>
+	<tbody>
+	<?php 
+	foreach ($column->getColunaValidadorCollection()->toArray() as $col_val):
+	?>
+	<tr>
+		<td><?php echo $col_val->getValidador()->getNome() ?></td>
+		<td>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default btn-sm" onclick="showModalValidatorsAdd(<?php echo $col_val->getColuna()->getId() ?>, <?php echo $col_val->getValidador()->getId() ?>)">
+					<i class="fa fa-pencil fa-fw"></i> Alterar
+				</button>
+				<button type="button" class="btn btn-danger btn-sm btn-del-validator" data-id="<?php echo $col_val->getValidador()->getId() ?>">
+					<i class="fa fa-times fa-fw"></i>Apagar
+				</button>
+			</div>
+		</td>
+	</tr>
+	<?php 
+	endforeach;
+	?>
+	</tbody>
+</table>
+
+<script type="text/javascript">
+$(".btn-del-validator").on('click', function(e) {
+	var elm = $(this);
+	var id_validator = elm.data('id');
+	var tr = elm.closest('tr');
+
+	func_confirm_modal = function() {
+		tr.css('background', '#FFE3E3'); 
+		sendAjax({
+			url: "<?php echo $this->url('api-resources-columns-validators-add', array('id_column'  => $column->getId()), array(), true) ?>/"+id_validator,
+			type: 'DELETE',
+			done: function(result) {
+				tr.addClass('bounceOutRight animated'); 
+				setTimeout(function(){tr.remove();}, 750);
+			},
+			always: function(result) {
+				tr.css('background', '');
+			}
+		});
+    };
+    showConfirmModal({title: 'Tem certeza de que deseja removar esse validador?'});
+	
+});
+</script>

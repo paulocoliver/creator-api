@@ -30,7 +30,7 @@ class Recurso extends Form
                 'required' => 'required', 
             ), 
             'options' => array( 
-                'label' => 'Recurso', 
+                'label' => 'URI do Recurso', 
             ), 
         )); 
  

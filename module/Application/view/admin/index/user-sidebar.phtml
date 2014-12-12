@@ -1,0 +1,30 @@
+<?php 
+$act1 = $this->item == 1 ? 'active' : '';
+$act2 = $this->item == 2 ? 'active' : '';
+?>
+<div id="account">
+	<div id="content">
+		<div id="sidebar">
+			<div class="sidebar-toggler visible-xs">
+				<i class="ion-navicon"></i>
+			</div>
+			
+			<h3>My account</h3>
+			<ul class="menu">
+				<li>
+					<a href="<?php echo $this->url('user-info') ?>" data-pjax class="<?php echo $act1 ?>">
+						<i class="ion-ios7-person-outline"></i>
+						Profile
+					</a>
+				</li>
+				<li>
+					<a href="<?php echo $this->url('user-token') ?>" data-pjax class="<?php echo $act2 ?>">
+						<i class="ion-key"></i>
+						Token
+					</a>
+				</li>
+			</ul>
+		</div>
+		<?php echo $this->content ?>
+	</div>
+</div> 

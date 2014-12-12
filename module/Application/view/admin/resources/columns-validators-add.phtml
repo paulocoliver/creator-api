@@ -1,0 +1,22 @@
+<?php
+$form->setAttribute('action', $this->url(null, array(), array(), true));
+?>
+<span class="label label-info">Campo: <?php echo $column->getNome() ?></span>
+&nbsp;&nbsp;
+<span class="label label-info">Validador: <?php echo $validador->getNome() ?></span>
+<br><br>
+
+<?php echo $this->form($form, null);  ?>
+<script type="text/javascript">
+$('#<?php echo $form->getName() ?>').validate({
+	submitHandler: function(form) {
+		sendAjax({
+			form: $(form),
+			done: function(result) {
+				$('#modalValidatorsAdd').modal('hide');
+				showModalValidators('<?php echo $column->getRecurso()->getId() ?>', '<?php echo $column->getId() ?>');		
+        	}
+    	});
+	},
+});
+</script>

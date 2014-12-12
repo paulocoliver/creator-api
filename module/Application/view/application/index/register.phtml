@@ -1,20 +1,35 @@
 <div id="signin">
     <a href="<?php echo $this->url('index') ?>" class="logo">
-    	<i class="brankic-pen"></i>
+    	<i class="fa fa-cloud-upload"></i>
     </a>
     
     <h3>Register</h3>
     
     <div class="content">
-        <form>
+        <form id="form-register" action="<?php echo $this->serverurl(true) ?>" method="post">
+        	<div class="fields">
+    			<strong>Nome </strong>
+    			<input class="form-control" type="text" name="nome" placeholder="Your name" required="required"/>
+    		</div>
+        	<div class="fields">
+    			<strong>Email </strong>
+    			<input class="form-control" type="email" name="email" placeholder="Your email" required="required"/>
+    		</div>
+        	<div class="fields">
+    			<strong>Username </strong>
+    			<input class="form-control" type="text" name="username" placeholder="Your username" required="required"/>
+    		</div>
 			<div class="fields">
-				<strong>Your information</strong>
-				<input class="form-control" type="text" placeholder="Your email" />
-				<input class="form-control" type="password" placeholder="Password" />
-				<input class="form-control" type="password" placeholder="Confirm password" />
+				<strong>Senha</strong>
+				<input id="form_password" class="form-control" type="password" name="password" placeholder="Password" required="required"/>
 			</div>
-			<div class="signup">
-				<a href="index.html" class="btn btn-success btn-lg">Create my account</a>
+			<div class="fields">
+				<strong>Confirmar senha</strong>
+				<input class="form-control" type="password" name="password2" placeholder="Confirm password" required="required"/>
+			</div>
+			
+			<div class="actions">
+				<button type="submit" class="btn btn-primary btn-lg">Criar minha conta</button>
 			</div>
 		</form>
     	
@@ -22,10 +37,38 @@
     
     <div class="bottom-wrapper">
     	<div class="message">
-    		<span>Already have an account?</span>
-    		<a href="<?php echo $this->url('login') ?>">Sign in here</a>.
+    		<span>Já tem uma conta?</span>
+    		<a href="<?php echo $this->url('login') ?>">Entre aqui</a>.
     	</div>
     </div>
-    
-    
 </div>
+<script type="text/javascript">
+$(function () {
+    $('#form-register').validate({
+    	rules: {
+    		username: {
+    			checkURL: true
+    		},
+    		password: {
+				required: true,
+				minlength: 5
+			},
+			password2: {
+				required: true,
+				minlength: 5,
+				equalTo: "#form_password"
+			}
+    	},
+    	submitHandler: function(form) {
+    		sendAjax({
+    			form: $(form),
+    			done: function(result) {
+        			if (result.data.next)
+            			location.href = result.data.next;
+            	}
+        	});
+        	return false;
+    	},
+    });
+});
+</script>

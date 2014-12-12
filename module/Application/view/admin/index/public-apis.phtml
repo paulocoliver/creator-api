@@ -1,0 +1,116 @@
+<div id="content">
+    <div class="menubar">
+    	<div class="sidebar-toggler visible-xs">
+    		<i class="ion-navicon"></i>
+    	</div>
+    	<div class="page-title">
+			 APIS Públicas
+    	</div>
+    	<form class="search hidden-xs">
+			<i class="fa fa-search"></i>
+			<input type="text" name="q" placeholder="Search APIs...">
+			<input type="submit">
+		</form>
+    </div>
+    <div class="content-wrapper clearfix">
+        <div id="projects">
+            <div class="row project-list">
+            	<?php
+                foreach ($this->results as $result):
+            	?>
+            	<div class="project" data-id="<?php echo $result['id'] ?>">
+            		<div class="info">
+            			<div class="name">
+            				<?php echo substr($this->escapehtml($result['titulo']), 0, 50) ?>
+            			</div>
+            			<div class="category"><?php echo substr($this->escapehtml($result['descricao']), 0, 200)  ?></div>
+            		</div>
+            		<div class="members">
+            			<?php 
+            			foreach ($this->api_users($result['id']) as $user):
+                            echo $this->gravatar(
+                                $user['email'],
+                                array('img_size' => 50), 
+                                array(
+                                    'class' => strtolower($user['permissao']),
+                                    'data-toggle' => 'popover',
+                                    'data-content' => '<b>'.$user['nome'].'</b><br>@'.$user['username'],
+                                    'title' => '',
+                                )
+                            );    
+            			endforeach;
+            			?>
+            			<a href="#" class="add-more"><i class="fa fa-plus"></i></a>
+            			<ul class="menu">
+                            <li><a href="#" class="add-api-user"><i class="fa fa-plus"></i> Participar</a></li>
+                            <li><a href="<?php echo $this->url('host-api/index', array('api' => $result['url'], 'port' => ':8080')) ?>" target="_blank"><i class="fa fa-code fa-fw"></i>Doc</a></li>
+            			</ul>
+            		</div>
+            	</div>
+            	<?php 
+            	endforeach;
+            	?>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+$(function () {
+
+	$('.members img').popover({html: true, placement: 'bottom'});
+	var $projects = $(".project");
+
+	$projects.each(function (index, el) {
+		var $btn = $(el).find(".add-more");
+		var $menu = $btn.siblings(".menu");
+		var timeout;
+
+		$btn.click(function (e) { e.preventDefault(); });
+
+		$(el).on("mouseenter", ".add-more, .menu", function () {
+			clearTimeout(timeout);
+			timeout = null;
+			$menu.addClass("active");
+		});
+
+		$(el).on("mouseleave", ".add-more, .menu", function () {
+			timeout = setTimeout(function () {
+				$menu.removeClass("active");
+			}, 400);
+		});
+	});
+
+	
+
+	$(".add-api-user").on('click', function(e) {
+		e.preventDefault();
+
+		var elem = $(this);
+        var row = elem.closest('div.project');
+		var id = row.data('id');
+
+		func_confirm_modal = function() {
+    		row.css('background', '#E3FFEE'); 
+    		sendAjax({
+    			url: "<?php echo $this->url(null, array(), array(), true) ?>",
+    			data: {id: id},
+    			done: function(result) {
+    				row.addClass('bounceOutRight animated'); 
+    				setTimeout(function(){row.remove();}, 750);
+    			},
+    			always: function(result) {
+    				row.css('background', '');
+    			}
+    		});
+        };
+        showConfirmModal({
+            title: 'Usar essa API?', 
+            btn: {val: 'Sim', cls: 'btn-success'}
+		});
+		
+	});
+
+});
+</script>

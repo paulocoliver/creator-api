@@ -6,6 +6,7 @@
      	"doctrine/common": "2.4.*",
 		"doctrine/dbal": "2.4.*",
 		"doctrine/orm": "2.4.*",
-		"neilime/zf2-twb-bundle": "2.*@stable"
+		"neilime/zf2-twb-bundle": "2.*@stable",
+		"ap/ap-xml-strategy": "dev-master"
 	}
 }

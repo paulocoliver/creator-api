@@ -40,7 +40,12 @@ class Coluna extends EntityAbstract
     /**
      * @ORM\Column(type="string")
      */
-    protected $disponivel;
+    protected $_select;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $_insert;
     
     /**
      * @ORM\Column(type="string")
@@ -51,6 +56,24 @@ class Coluna extends EntityAbstract
      * @ORM\Column(type="integer")
      */
     protected $status;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="ColunaConstraint", mappedBy="column", fetch="LAZY")
+     * @var Doctrine\Common\Collections\Collection
+     */
+    protected $colunaConstraintCollection;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="ColunaConstraint", mappedBy="column_reference", fetch="LAZY")
+     * @var Doctrine\Common\Collections\Collection
+     */
+    protected $colunaConstraintReferenceCollection;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="ColunaValidador", mappedBy="coluna", fetch="LAZY")
+     * @var Doctrine\Common\Collections\Collection
+     */
+    protected $colunaValidadorCollection;
     
 	public function getId() {
 		return $this->id;
@@ -76,12 +99,20 @@ class Coluna extends EntityAbstract
 		$this->nome = $nome;
 	}
 
-	public function getDisponivel() {
-		return $this->disponivel;
+	public function getSelect() {
+		return $this->_select;
 	}
 
-	public function setDisponivel($disponivel) {
-		$this->disponivel = $disponivel;
+	public function setSelect($select) {
+		$this->_select = $select;
+	}
+
+	public function getInsert() {
+		return $this->_insert;
+	}
+
+	public function setInsert($insert) {
+		$this->_insert = $insert;
 	}
 
 	public function getTipo() {
@@ -100,18 +131,30 @@ class Coluna extends EntityAbstract
 		$this->status = $status;
 	}
 
-	/**
-	 * @ORM\OneToMany(targetEntity="ColunaConstraint", mappedBy="column", fetch="LAZY")
-	 * @var Doctrine\Common\Collections\Collection
-	 */
-	protected $colunaConstraintCollection;
+	public function getColunaConstraintCollection() {
+		return $this->colunaConstraintCollection;
+	}
 
-	/**
-	 * @ORM\OneToMany(targetEntity="ColunaConstraint", mappedBy="column_reference", fetch="LAZY")
-	 * @var Doctrine\Common\Collections\Collection
-	 */
-	protected $colunaConstraintReferenceCollection;
-	
+	public function setColunaConstraintCollection($colunaConstraintCollection) {
+		$this->colunaConstraintCollection = $colunaConstraintCollection;
+	}
+
+	public function getColunaConstraintReferenceCollection() {
+		return $this->colunaConstraintReferenceCollection;
+	}
+
+	public function setColunaConstraintReferenceCollection($colunaConstraintReferenceCollection) {
+		$this->colunaConstraintReferenceCollection = $colunaConstraintReferenceCollection;
+	}
+
+	public function getColunaValidadorCollection() {
+		return $this->colunaValidadorCollection;
+	}
+
+	public function setColunaValidadorCollection($colunaValidadorCollection) {
+		$this->colunaValidadorCollection = $colunaValidadorCollection;
+	}
+
 	/**
      * Configura os filtros dos campos da entidade
      *

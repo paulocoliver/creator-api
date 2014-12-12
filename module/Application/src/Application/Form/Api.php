@@ -20,7 +20,7 @@ class Api extends Form
             ), 
             'options' => array( 
                 'label' => 'URL',
-            	'add-on-append' => '.minhaapi.com',
+            	'add-on-append' => '.criadorapi.com',
             ), 
         )); 
  
@@ -66,6 +66,7 @@ class Api extends Form
             'type' => 'Zend\Form\Element\Checkbox', 
             'attributes' => array( 
             	'id' => 'status_switch',
+            	'checked' => 'checked'
             ), 
             'options' => array( 
             	'use_hidden_element' => true,
@@ -78,12 +79,13 @@ class Api extends Form
             'type' => 'Zend\Form\Element\Checkbox', 
             'attributes' => array( 
             	'id' => 'acesso_switch',
+            	'checked' => 'checked'
             ), 
             'options' => array( 
             	'use_hidden_element' => true,
             ), 
         ));
-        $this->get('acesso')->setCheckedValue('PRIVADO')->setUncheckedValue('PUBLICO');
+        $this->get('acesso')->setCheckedValue('PUBLICO')->setUncheckedValue('PRIVADO');
         
         
         

@@ -5,9 +5,9 @@
     		<i class="ion-navicon"></i>
     	</div>
     	<div class="page-title">
-			APIs
+			Minhas APIs
     	</div>
-    	<a  href="<?php echo $this->url('api') ?>" data-pjax class="new-user btn btn-success pull-right"><span>Create a New API</span></a>
+    	<a  href="<?php echo $this->url('api') ?>" data-pjax class="new-user btn btn-success pull-right"><span>Criar uma nova API</span></a>
     </div>
     <div class="content-wrapper clearfix">
     	 
@@ -17,7 +17,7 @@
             		<a href="<?php echo $this->url('api') ?>" data-pjax>
             			<i class="ion-ios7-plus-outline"></i>
             			<span class="info">
-            				Create a New API
+            				Criar uma nova API
             			</span>
             		</a>
             	</div>
@@ -25,11 +25,26 @@
             	<?php
                 foreach ($this->results as $result):
             	?>
-            	<div class="project">
+            	<div class="project" data-id="<?php echo $result['id'] ?>">
             		<div class="info">
-            			<div class="name"><?php echo $result['titulo'] ?></div>
-            			<div class="category"><?php echo $result['descricao'] ?></div>
-            			<div class="last-update">Last updated 3 hours ago</div>
+            			<div class="name">
+            				<?php echo substr($this->escapehtml($result['titulo']), 0, 50) ?>
+            				<?php 
+            				if ($result['acesso'] == 'PRIVADO'):
+            				?>
+							<i class="fa fa-lock" style="color:#D9534F; font-size: 13px;" title="Private"></i>
+							<?php 
+							else:
+							?>
+							<i class="fa fa-unlock-alt" style="color:#22B92E; font-size: 13px;" title="Public"></i>
+							<?php 
+							endif;
+							?>
+            			</div>
+            			<div class="category"><?php echo substr($this->escapehtml($result['descricao']), 0, 200)  ?></div>
+            			<?php 
+            			//<div class="last-update">Last updated 3 hours ago</div>
+            			?>
             		</div>
             		<div class="members">
             			<?php 
@@ -48,7 +63,7 @@
             			?>
             			<a href="#" class="add-more"><i class="fa fa-plus"></i></a>
             			<ul class="menu">
-                            <li><a href="#"><i class="fa fa-code fa-fw"></i>Doc</a></li>
+                            <li><a href="<?php echo $this->url('host-api/index', array('api' => $result['url'], 'port' => ':8080')) ?>" target="_blank"><i class="fa fa-code fa-fw"></i>Doc</a></li>
             				<?php 
             				if ($result['permissao'] == 'OWNER' || $result['permissao'] == 'EDIT'):
             				    $param_id = array('id' => $result['id']);
@@ -64,7 +79,7 @@
             				<?php 
             				if ($result['permissao'] == 'OWNER'):
             				?>
-            				<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete Api</a></li>
+            				<li><a href="#" class="delete-api"><i class="fa fa-trash-o fa-fw"></i> Delete Api</a></li>
             				<?php 
             				endif;
             				?>
@@ -104,5 +119,32 @@ $(function () {
 			}, 400);
 		});
 	});
+
+	$(".delete-api").on('click', function(e) {
+		e.preventDefault();
+
+		var elem = $(this);
+        var row = elem.closest('div.project');
+		var id = row.data('id');
+
+		func_confirm_modal = function() {
+    		row.css('background', '#FFE3E3'); 
+
+    		sendAjax({
+    			url: "<?php echo $this->url('api', array(), array(), true) ?>/"+id,
+    			type: 'DELETE',
+    			done: function(result) {
+    				row.addClass('bounceOutRight animated'); 
+    				setTimeout(function(){row.remove();}, 750);
+    			},
+    			always: function(result) {
+    				row.css('background', '');
+    			}
+    		});
+        };
+        showConfirmModal({title: 'Tem certeza de que deseja removar essa API?'});
+		
+	});
+
 });
 </script>

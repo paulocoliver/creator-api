@@ -1,0 +1,87 @@
+<style>
+#panel.support i.ion-key {
+	-ms-transform: rotate(-140deg);
+	-webkit-transform: rotate(-140deg);
+	transform: rotate(-140deg);
+	font-size: 53px !important;
+}
+</style>
+
+<div id="panel" class="support">
+	<h3>
+		Token de Segurança
+	</h3>
+	<div class="topics">
+		<p>
+			Para utilizar qualquer API do nosso sistema, é necessário informar o token de segurança em todas as requisições.<br>
+			O token é um código único, gerado pelo sistema.<br>
+			Mantenha-o em segurança e não o divulgue.
+		</p>
+
+		<div class="row topic">
+			<div class="col-md-1 col-sm-2">
+				<i class="ion-key"></i>
+			</div>
+			<div class="col-md-6">
+				<a href="#">Your Token</a>
+				<div class="input-group">
+					<input id="input-token" type="password" value="<?php echo $this->layout()->user->token ?>" class="form-control" readonly="readonly">
+					<span class="input-group-btn">
+						<button id="btn-view-token" class="btn btn-info" type="button" data-toggle="button"><span class="fa fa-lock"></span></button>
+					</span>
+				</div>
+				<div class="input-group">
+					<br>
+					<button id="btn-new-token" class="btn btn-danger btn-sm" type="button" data-toggle="button"><span class="fa fa-refresh"></span> Gerar novo token</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    $("#btn-view-token").on('click', function(e) {
+        var elem = $(this);
+        var input = $('#input-token');
+
+        var new_type = 'password';
+        var new_icon = 'fa-lock';
+        var new_onclick = function(){};
+        if (input.attr('type') == 'password') {
+			new_type = 'text';
+        	new_icon = 'fa-unlock-alt';
+        	new_onclick = function(e) {$(this).select();};
+        }
+        elem.find('span.fa').removeClass('fa-lock fa-unlock-alt').addClass(new_icon);
+        input.attr('type', new_type); 
+        input.on('click', new_onclick); 
+    });
+
+    $("#btn-new-token").on('click', function(e) {
+    	func_confirm_modal = function() {
+    		sendAjax({
+    			url: "<?php echo $this->url(null, array(), array(), true) ?>",
+    			done: function(result) {
+        			if (result.data.token) {
+        				$('#input-token').val(result.data.token);
+	        			Messenger().post({
+	    					message: 'Lembre-se de atualizar seu sistema toda vez que gerar um novo token.',
+	    					type: 'info',
+	    					hideAfter: 10,
+	    					showCloseButton: false
+	    				});
+            		}
+    			},
+    			always: function(result) {
+    			}
+    		});
+        };
+        showConfirmModal({
+            title: 'Tem certeza de que deseja gerar um novo token?<br><small>Lembre-se de atualizar seu sistema toda vez que gerar um novo token.<small>',
+            btn: {val: 'Sim'}
+		});
+        
+    });
+});
+</script>

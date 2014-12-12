@@ -81,19 +81,6 @@ else:
 	</div>
 </div>
 
-<div id="modalCols" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h3 class="modal-title" id="myModalLabel">Campos</h3>
-			</div>
-			<div class="modal-body">
-			</div>
-		</div>
-	</div>
-</div>
-
 <div id="modalEditResources" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -111,18 +98,82 @@ else:
 	</div>
 </div>
 
-<div id="modalEditValidator" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div id="modalCols" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h3 class="modal-title" id="myModalLabel">Validadores</h3>
+				<h3 class="modal-title" id="myModalLabel">Campos</h3>
 			</div>
 			<div class="modal-body">
 			</div>
 		</div>
 	</div>
 </div>
+
+<div id="modalEditCols" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h3 class="modal-title" id="">Opções do campo</h3>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button id="modalEditCols_Submit" type="button" class="btn btn-info btn-lg">Salvar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="modalEditValidator" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h3 class="modal-title" id="myModalLabel">
+					Validadores
+					<div id="btn-add-validator" data-id_col="" class="btn-group pull-right" style="margin-right: 30px;">
+						<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> Adicionar Validador</button>
+						<ul class="dropdown-menu" role="menu">
+							<?php 
+							foreach ($validadores as $validador):
+							?>
+							<li><a href="#" data-id="<?php echo  $validador->getId() ?>"><?php echo  $validador->getNome() ?></a></li>
+							<?php 
+							endforeach;
+							?>
+						</ul>
+					</div>
+					<div class="clearfix"></div>
+				</h3>
+			</div>
+			<div class="modal-body">
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="modalValidatorsAdd" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h3 class="modal-title" id="">Add/Edit validator</h3>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+				<button id="modalValidatorsAdd_Submit" type="button" class="btn btn-info btn-lg">Salvar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 <script type="text/javascript">
 $('.col_tabela i.fa-exclamation-triangle').tooltip({
@@ -140,7 +191,8 @@ $("#modalEditResourcesSubmit").on('click', function(e) {
 });
 $(".btn-recurso-actions").on('click', function(e) {
 	var elm = $(this);
-	var id_rec = elm.closest('tr').data('id');
+	var tr = elm.closest('tr');
+	var id_rec = tr.data('id');
 	var act = elm.data('act');
 
 	if (act == 'cols') {
@@ -156,20 +208,64 @@ $(".btn-recurso-actions").on('click', function(e) {
 		});
 
 	} else if (act == 'del') {
-		sendAjax({
-			url: "<?php echo $this->url('api-resources-edit', array(), array(), true) ?>/"+id_rec,
-			type: 'DELETE',
-			/*done: function(result) {
-				row.addClass('bounceOutRight animated'); 
-					setTimeout(function(){row.remove();}, 750);
-			},
-			always: function(result) {
-				row.css('background', '');
-			}*/
-		});
+		func_confirm_modal = function() {
+			tr.css('background', '#FFE3E3'); 
+    		sendAjax({
+    			url: "<?php echo $this->url('api-resources-edit', array(), array(), true) ?>/"+id_rec,
+    			type: 'DELETE',
+    			done: function(result) {
+    				tr.addClass('bounceOutRight animated'); 
+    				setTimeout(function(){tr.remove();}, 750);
+    			},
+    			always: function(result) {
+    				tr.css('background', '');
+    			}
+    		});
+        };
+        showConfirmModal({title: 'Tem certeza de que deseja removar esse Recurso?'});
 	}
 	
 });
+
+function showModalValidators(id_rec, id_col) {
+	var modal = $('#modalEditValidator');
+	modal.modal('hide');
+	$.get("<?php echo $this->url('api-resources-columns-validators', array(), array(), true) ?>/"+id_rec+'/'+id_col, function( data ) {
+		$('#btn-add-validator').data('id_col', id_col);
+		$('.modal-body', modal).html(data);
+		modal.modal('show');
+	});
+}
+
+function showModalValidatorsAdd(id_col, id_validator) {
+	$.get("<?php echo $this->url('api-resources-columns-validators-add', array(), array(), true) ?>/"+id_col+'/'+id_validator, function( data ) {
+		var modal = $('#modalValidatorsAdd');
+		$('.modal-body', modal).html(data);
+		modal.modal('show');
+	});
+}
+
+function showModalEditCols(id_col) {
+	$.get("<?php echo $this->url('api-resources-columns-edit', array(), array(), true) ?>/"+id_col, function( data ) {
+		var modal = $('#modalEditCols');
+		$('.modal-body', modal).html(data);
+		modal.modal('show');
+	});
+}
+
+$("#btn-add-validator a").on('click', function(e) {
+	var elm = $(this);
+	var id_validator = elm.data('id');
+	var id_col = elm.closest('#btn-add-validator').data('id_col');
+	showModalValidatorsAdd(id_col, id_validator);
+});
+$("#modalValidatorsAdd_Submit").on('click', function(e) {
+	$('#modalValidatorsAdd form').submit();
+});
+$("#modalEditCols_Submit").on('click', function(e) {
+	$('#modalEditCols form').submit();
+});
+
 </script>
 
 <?php
